@@ -1,5 +1,7 @@
 import tkinter as tk
 import numpy as np
+
+from tkinter import messagebox
 import time
 from tkinter import ttk
 
@@ -48,6 +50,9 @@ canvas1.create_line(0,600,900,600)
 
 recur = 0
 count =0
+unkown = 0 
+
+
 def solve ():
     global count
     if (count == 1):
@@ -91,10 +96,14 @@ def convert1 () :
         for i in range(9):
             for j in range(9):
                 if (rows[i][j].get() == ''):
+                    unkown = unkown +1
                     board[j][i] = 0
                 else:
                     board[j][i] = int(rows[i][j].get())
         print(board)
+        if (unkown > (81-17)):
+            messagebox.showerror("Error", "Error message")
+            else:
         print('Moving to solve')
         solve()
         
