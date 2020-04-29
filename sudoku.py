@@ -103,9 +103,9 @@ def convert1 () :
         print(board)
         if (unkown > (81-17)):
             messagebox.showerror("Error", "Error message")
-            else:
-        print('Moving to solve')
-        solve()
+        else:
+            print('Moving to solve')
+            solve()
         
 
 def convert2() :
