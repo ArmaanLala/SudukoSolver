@@ -5,29 +5,31 @@ from tkinter import messagebox
 import time
 from tkinter import ttk
 
-root= tk.Tk()
-
-canvas1 = tk.Canvas(root, width = 900, height = 1000)
+root = tk.Tk()
+root.title("Sudoku")
+done = False
+canvas1 = tk.Canvas(root, width=900, height=1100)
 canvas1.pack()
 
-board = np.zeros((9,9), dtype=int)
-board = [[5 ,3, 4, 6, 7, 8, 9, 1, 2],
- [6, 7, 2, 1, 9, 5, 3, 4, 8],
- [1 ,9, 8, 3, 4, 2, 5, 6, 7],
- [8 ,5 ,9 ,7 ,6 ,1 ,4 ,2 ,3],
- [4 ,2 ,6 ,8 ,5, 3, 7, 9, 1],
- [7 ,1 ,3 ,9 ,2 ,4 ,8 ,5, 6],
- [9, 6, 1, 5, 3, 7, 2, 8, 4],
- [2, 8, 7, 4, 1, 9, 6, 3, 5],
- [3, 4, 5, 2, 8, 6, 1, 7, 9]]
+board = np.zeros((9, 9), dtype=int)
+board = [
+    [0, 0, 4, 0, 7, 0, 0, 0, 2],
+    [6, 0, 2, 0, 0, 0, 0, 4, 0],
+    [0, 9, 0, 0, 0, 0, 0, 0, 0],
+    [0, 5, 0, 0, 0, 1, 4, 0, 3],
+    [0, 0, 0, 8, 0, 0, 0, 9, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 6, 0, 0, 0, 0, 2, 0, 4],
+    [0, 0, 0, 0, 0, 9, 0, 0, 0],
+    [0, 0, 5, 0, 8, 0, 0, 0, 9]]
 
-large_font = ('Verdana',65)
+large_font = ('Verdana', 65)
 rows = []
 
 for i in range(9):
-    cols=[]
+    cols = []
     for j in range(9):
-        cols.append(tk.Entry(root, width=2,font=large_font, justify = tk.CENTER))
+        cols.append(tk.Entry(root, width=2, font=large_font, justify=tk.CENTER))
         # cols.append(1)
         # print(len(cols))
     rows.append(cols)
@@ -36,47 +38,40 @@ for i in range(9):
 
 for i in range(9):
     for j in range(9):
-        canvas1.create_window((i+1)*100 - 50, (j+1)*100 - 50 , window=rows[i][j])
+        canvas1.create_window((i+1)*100 - 50, (j+1) *
+                              100 - 50, window=rows[i][j])
         # rows[i][j].insert(0,1)
 
 
-canvas1.create_line(300,00,300,900)
-
-canvas1.create_line(0,300,900,300)
-
-canvas1.create_line(600,00,600,900)
-
-canvas1.create_line(0,600,900,600)
-
-recur = 0
-count =0
-unkown = 0 
+canvas1.create_line(300, 00, 300, 900)
+canvas1.create_line(0, 300, 900, 300)
+canvas1.create_line(600, 00, 600, 900)
+canvas1.create_line(0, 600, 900, 600)
 
 
-def solve ():
-    global count
-    if (count == 1):
-        convert2()
+def solve():
+    global done
+    if (done):
         return
-    global recur
-    
-    for y in range(9):
-        for x in range(9):
-            if (board[y][x] == 0):
-                for n in range (1,10):
-                    if(possible(y,x,n)):
-                        board[y][x] = n
-                        solve()
-                        board[y][x] = 0
-                return 
+    if(done == False):
+        for y in range(9):
+            if(done == False):
+                for x in range(9):
+                    if (board[y][x] == 0):
+                        for n in range(1, 10):
+                            if(done == False):
+                                if(possible(y, x, n)):
+                                    board[y][x] = n
+                                    solve()
+                                    board[y][x] = 0
+                        return
     print(board)
-    count = count + 1
-    if (count == 1):
-        convert2()
-        return
+    done = True
+    convertFinal()
+    return
 
 
-def possible(y,x,n):
+def possible(y, x, n):
     for i in range(9):
         if board[y][i] == n:
             return False
@@ -91,31 +86,33 @@ def possible(y,x,n):
                 return False
     return True
 
-def convert1 () :
+
+def convertFirst():
+    
+    global done
+    done = False
     if (conditions()):
         for i in range(9):
             for j in range(9):
                 if (rows[i][j].get() == ''):
-                    unkown = unkown +1
                     board[j][i] = 0
                 else:
                     board[j][i] = int(rows[i][j].get())
         print(board)
-        if (unkown > (81-17)):
-            messagebox.showerror("Error", "Error message")
-        else:
-            print('Moving to solve')
-            solve()
-        
+        if (not checkBoard()):
+            messagebox.showerror("Error", "Stupid Idiot Armaan")
+            return
+        print('Moving to solve')
+        solve()
 
-def convert2() :
-    global count
+
+def convertFinal():
     for i in range(9):
         for j in range(9):
-            # board[j][i] = int(rows[i][j].get())
-            rows[i][j].delete(0,'end')
-            rows[i][j].insert(0,board[j][i])
-    count = 0
+            rows[i][j].delete(0, 'end')
+            if (board[j][i] != 0):
+                rows[i][j].insert(0, board[j][i])
+
 
 def conditions():
     for i in range(9):
@@ -125,21 +122,136 @@ def conditions():
                 return False
     return True
 
-def clear():
+
+
+def checkBoard():
     for i in range(9):
         for j in range(9):
-            # board[j][i] = int(rows[i][j].get())
-            rows[i][j].delete(0,'end')
-def qu () :
+            if not (checkCol(j) and checkRow(i) and checkBox(j,i)):
+                return False
+    return True
+
+def checkRow(x):
+    st = set()
+    for i in range (9):
+        if ((int(board[x][i]) in st) and not (int(board[x][i]) == 0)):
+            return False
+        else:
+            st.add(int(board[x][i]))
+    return True
+
+def checkCol(x):
+    st = set()
+    for i in range (9):
+        if ((int(board[i][x]) in st) and not (int(board[i][x]) == 0)):
+            return False
+        else:
+            st.add(int(board[i][x]))
+    return True
+
+def checkBox(y,x):
+    st = set()
+    x0 = (x//3) * 3
+    y0 = (y//3) * 3
+    for i in range(3):
+        for j in range(3):
+            if ((int(board[y0 + i][x0 + j]) in st) and  not(int(board[y0 + i][x0 + j]) == 0)):
+                return False
+            else:
+                st.add(int(board[y0 + i][x0 + j]))
+    return True
+
+
+def checkBoardFinal():
+    for i in range(9):
+        for j in range(9):
+            if not (checkColFinal(j) and checkRowFinal(i) and checkBoxFinal(j,i)):
+                return False
+    return True
+
+def checkRowFinal(x):
+    st = set()
+    for i in range (9):
+        if ((int(board[x][i]) in st)):
+            return False
+        else:
+            st.add(int(board[x][i]))
+    return True
+
+def checkColFinal(x):
+    st = set()
+    for i in range (9):
+        if ((int(board[i][x]) in st)):
+            return False
+        else:
+            st.add(int(board[i][x]))
+    return True
+
+def checkBoxFinal(y,x):
+    st = set()
+    x0 = (x//3) * 3
+    y0 = (y//3) * 3
+    for i in range(3):
+        for j in range(3):
+            if ((int(board[y0 + i][x0 + j]) in st)):
+                return False
+            else:
+                st.add(int(board[y0 + i][x0 + j]))
+    return True
+
+
+def checkFinal():
+    if (conditions()):
+        for i in range(9):
+            for j in range(9):
+                if (rows[i][j].get() == ''):
+                    board[j][i] = 0
+                else:
+                    board[j][i] = int(rows[i][j].get())
+    global labelVar
+    if (checkBoardFinal()):
+        labelVar.set("Solution is correct")
+    else:
+        labelVar.set("Bad")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def clear():
+    global labelVar
+    labelVar.set('')
+    for i in range(9):
+        for j in range(9):
+            rows[i][j].delete(0, 'end')
+
+
+def qu():
     exit()
-    
-button1 = tk.Button(text='Solve', command=convert1)
+
+labelVar = tk.StringVar()
+labelVar.set('')
+button1 = tk.Button(text='Solve', command=convertFirst)
 button2 = tk.Button(text='Clear', command=clear)
 button3 = tk.Button(text='Exit', command=qu)
-canvas1.create_window(450,950, window=button1)
+button4 = tk.Button(text='Check', command=checkFinal)
+button5 = tk.Button(text='Generate')
+label1 = tk.Label(root,textvar=labelVar)
+canvas1.create_window(450, 950, window=button1)
 
-canvas1.create_window(600,950, window=button2)
-
-canvas1.create_window(300,950, window=button3)
-convert2()
+canvas1.create_window(600, 950, window=button2)
+canvas1.create_window(300, 950, window=button3)
+canvas1.create_window(300, 1000, window=button4)
+canvas1.create_window(600, 1000, window=button5)
+canvas1.create_window(450, 1000, window=label1)
+convertFinal()
 root.mainloop()
