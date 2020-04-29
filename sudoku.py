@@ -88,7 +88,7 @@ def possible(y, x, n):
 
 
 def convertFirst():
-    
+
     global done
     done = False
     if (conditions()):
@@ -123,39 +123,41 @@ def conditions():
     return True
 
 
-
 def checkBoard():
     for i in range(9):
         for j in range(9):
-            if not (checkCol(j) and checkRow(i) and checkBox(j,i)):
+            if not (checkCol(j) and checkRow(i) and checkBox(j, i)):
                 return False
     return True
 
+
 def checkRow(x):
     st = set()
-    for i in range (9):
+    for i in range(9):
         if ((int(board[x][i]) in st) and not (int(board[x][i]) == 0)):
             return False
         else:
             st.add(int(board[x][i]))
     return True
 
+
 def checkCol(x):
     st = set()
-    for i in range (9):
+    for i in range(9):
         if ((int(board[i][x]) in st) and not (int(board[i][x]) == 0)):
             return False
         else:
             st.add(int(board[i][x]))
     return True
 
-def checkBox(y,x):
+
+def checkBox(y, x):
     st = set()
     x0 = (x//3) * 3
     y0 = (y//3) * 3
     for i in range(3):
         for j in range(3):
-            if ((int(board[y0 + i][x0 + j]) in st) and  not(int(board[y0 + i][x0 + j]) == 0)):
+            if ((int(board[y0 + i][x0 + j]) in st) and not(int(board[y0 + i][x0 + j]) == 0)):
                 return False
             else:
                 st.add(int(board[y0 + i][x0 + j]))
@@ -165,29 +167,32 @@ def checkBox(y,x):
 def checkBoardFinal():
     for i in range(9):
         for j in range(9):
-            if not (checkColFinal(j) and checkRowFinal(i) and checkBoxFinal(j,i)):
+            if not (checkColFinal(j) and checkRowFinal(i) and checkBoxFinal(j, i)):
                 return False
     return True
 
+
 def checkRowFinal(x):
     st = set()
-    for i in range (9):
+    for i in range(9):
         if ((int(board[x][i]) in st)):
             return False
         else:
             st.add(int(board[x][i]))
     return True
 
+
 def checkColFinal(x):
     st = set()
-    for i in range (9):
+    for i in range(9):
         if ((int(board[i][x]) in st)):
             return False
         else:
             st.add(int(board[i][x]))
     return True
 
-def checkBoxFinal(y,x):
+
+def checkBoxFinal(y, x):
     st = set()
     x0 = (x//3) * 3
     y0 = (y//3) * 3
@@ -215,18 +220,6 @@ def checkFinal():
         labelVar.set("Bad")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 def clear():
     global labelVar
     labelVar.set('')
@@ -238,6 +231,7 @@ def clear():
 def qu():
     exit()
 
+
 labelVar = tk.StringVar()
 labelVar.set('')
 button1 = tk.Button(text='Solve', command=convertFirst)
@@ -245,7 +239,7 @@ button2 = tk.Button(text='Clear', command=clear)
 button3 = tk.Button(text='Exit', command=qu)
 button4 = tk.Button(text='Check', command=checkFinal)
 button5 = tk.Button(text='Generate')
-label1 = tk.Label(root,textvar=labelVar)
+label1 = tk.Label(root, textvar=labelVar)
 canvas1.create_window(450, 950, window=button1)
 
 canvas1.create_window(600, 950, window=button2)
